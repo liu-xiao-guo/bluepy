@@ -2,6 +2,7 @@ from .btle import UUID, Peripheral, DefaultDelegate
 from paho.mqtt import client as mqtt_client
 import struct
 import math
+import json
 
 DEFAULT_HOST = 'localhost'
 DEFAULT_PORT = 1883
@@ -419,6 +420,7 @@ def main():
     print(sys.argv, len(sys.argv))
     arg = parser.parse_args(sys.argv[1:])
     
+    '''
     print('temperature: ' + str(arg.temperature))
     print('humidity: ' + str(arg.humidity))
     print('barometer: ' + str(arg.barometer))
@@ -427,6 +429,7 @@ def main():
     print('gyroscope: ' + str(arg.gyroscope))
     print('light: ' + str(arg.light))
     print('count: ' + str(arg.count))
+    '''
     
     # set all true to get all of the output
     arg.all = True
@@ -481,8 +484,18 @@ def main():
            break
            
        # publish the data
-       print("Going to publish temperature")
-       client.publish("data",  str(tag.IRtemperature.read()))
+       print("Going to publish data info")
+       data = { 'Temp': str(tag.IRtemperature.read()), \
+                'Humidity':  str(tag.humidity.read()), \
+                'Barometer':  str(tag.barometer.read()), \
+                'Accelerometer': str(tag.accelerometer.read()), \
+                'Magnetometer': str(tag.magnetometer.read()), \
+                'Gyroscope': str(tag.gyroscope.read()), \
+                'Light':  str(tag.lightmeter.read())
+              }
+        
+       s = json.dumps(data)
+       client.publish("data",  s)
        
        counter += 1
        tag.waitForNotifications(arg.t)
