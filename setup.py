@@ -69,6 +69,7 @@ setup (
     entry_points={
         'console_scripts': [
             'sensortag=bluepy.sensortag:main',
+            'sensordata=bluepy.sensordata:main',
             'blescan=bluepy.blescan:main',
         ]
     }
