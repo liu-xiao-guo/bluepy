@@ -1,6 +1,10 @@
 from .btle import UUID, Peripheral, DefaultDelegate
+from paho.mqtt import client as mqtt_client
 import struct
 import math
+
+DEFAULT_HOST = 'localhost'
+DEFAULT_PORT = 1883
 
 def _TI_UUID(val):
     return UUID("%08X-0451-4000-b000-000000000000" % (0xF0000000+val))
@@ -450,10 +454,13 @@ def main():
     if (arg.light or arg.all) and tag.lightmeter is not None:
         tag.lightmeter.enable()
 
+    client = mqtt_client.Client()
+    client.connect(DEFAULT_HOST, DEFAULT_PORT)
+    
     # Some sensors (e.g., temperature, accelerometer) need some time for initialization.
     # Not waiting here after enabling a sensor, the first read value might be empty or incorrect.
     time.sleep(1.0)
-
+    
     counter=1
     while True:
        if arg.temperature or arg.all:
@@ -472,6 +479,11 @@ def main():
            print("Light: ", tag.lightmeter.read())
        if counter >= arg.count and arg.count != 0:
            break
+           
+       # publish the data
+       print("Going to publish temperature")
+       client.publish("data",  tag.IRtemperature.read())
+       
        counter += 1
        tag.waitForNotifications(arg.t)
 
