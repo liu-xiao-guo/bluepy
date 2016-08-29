@@ -482,7 +482,7 @@ def main():
            
        # publish the data
        print("Going to publish temperature")
-       client.publish("data",  tag.IRtemperature.read())
+       client.publish("data",  str(tag.IRtemperature.read()))
        
        counter += 1
        tag.waitForNotifications(arg.t)
