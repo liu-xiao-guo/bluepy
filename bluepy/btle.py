@@ -306,7 +306,7 @@ class BluepyHelper:
 
 
 class Peripheral(BluepyHelper):
-    def __init__(self, deviceAddr=None, addrType=ADDR_TYPE_PUBLIC, iface=None):
+    def __init__(self, deviceAddr=None, addrType=ADDR_TYPE_RANDOM, iface=None):
         BluepyHelper.__init__(self)
         self.services = {} # Indexed by UUID
         self.discoveredAllServices = False
